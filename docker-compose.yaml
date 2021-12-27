@@ -1,0 +1,78 @@
+version: '3.1'
+
+services:
+
+##############################
+#  mysql:
+#    image: mysql:5.5
+#    ports:
+#      - "3306:3306"
+#    container_name: mysql
+#    restart: always
+#    volumes:
+#      - ./mysql:/var/lib/mysql
+#    environment:
+#      - MYSQL_ROOT_PASSWORD=Y0)IMk_ArCyUam?rwsF?0brKZXA0_Du6PTC*Xk*(dRJMB7DgaijENUeqAPUcRKGJfK*olnODjDsY7?l0Uv+qTzVTyjg07PwDoIwnglMxT,,iRooVgxBMgP3HiJ?9P+YBO,UGCgAauqOMFp.Nm(mPrSiCmMH1AEYa_y_iEh(PkkKlj8VWxdhibCG(.bbihy8VtjGDwdG50b*j+LWZagwwxXtFehNUs1MeYW4Y6kLTVqh?D2BZkYOXf4.Gx,snITAXGlMS6T(hqLDq1W0sYjy5vb0WjdXXHjN1r82i1pno2d9eUs+C.?euJRSyWOwIT(ICPICcxpEynE0+Q0qrJEy7QtBZ70GIab45uNIbYPfnTNivt*xuuleKvaCNBxG_up0EINN06Ei?kNRHCkZXs,TIukrwXv*5WEeEv_EQM3ZNeR_of)v4?snX_L7g,.A3VyVs,5f7grEXT6TLYfDSQrrtB_FmpG)ET(HE3eewdXWoBH+zB6_lWkFz
+#      - MYSQL_DATABASE=kivi.ua.loc
+#      - MYSQL_USER=kivi.ua.loc
+#      - MYSQL_PASSWORD=Nr4XM1ME6Ob7Y0edP8.vMC.C303G9AP2+QZEdD_CV5BbEcp9sW3UJwCFs.8TLM4pOydr9QijBUdi?AL26XH.?71u6HFLEFHO0MP.w261tg4KQ3gbI??dtWGkB27_sQhYs*L?uJd+lqizj86ESHu0C2Ol9dSYqBr0rYus*SoraFzsMU2600t4QDYP+MNUWJ6SwSELULTu+rbW.PeL(43Cxl1(UW3HoXj*,)hi9TaFaSwdwWXstDQY?8jeUte*,VEiN4y6AoA1PX7bgpgRVNx4)EiYpk0w.oN+bHoSSB)dW+,KeJUS?o*KgI1*iTu?XQWe1ANQuS5IM)rbtlzn9N+Gt2RaM8U6FUPzEl,alUZEtRWWOnxyb2uoIqdZgpc,es7ZltQpJan*llN6cnmtU?lZjR1n+ZJSAELmX25*008+uP?Cabk7bhK5*Qgc5ir57cWasSTXJLnXVEu2q0dJZFaXYwruxph,BASyXJNsyw8Gf73e)UoM4V
+#    networks:
+#       ai_net:
+#         ipv4_address: 172.26.0.10
+#    networks:
+#      - ai_net
+##############################
+  nginx:
+    image: nginx
+    container_name: ai-nginx
+    ports:
+      #- "80:80"
+      - "8080:8080"
+      #- "443:443"
+      #- "36963:36964"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/logs:/var/log/nginx
+      - ./www:/var/www
+    command: [nginx-debug, '-g', 'daemon off;']
+    networks:
+       ai_net:
+         ipv4_address: 172.26.0.11
+#    networks:
+#      - ai_net
+#    links:
+#      - php
+##############################
+  php:
+#    network_mode: "host"
+    build: ./php
+    container_name: ai-php
+    volumes:
+      - ./www:/var/www
+    working_dir: /var/www
+    networks:
+       ai_net:
+         ipv4_address: 172.26.0.12
+#    links:
+#      - mysql
+#    extra_hosts:
+#      - kivi.ua.loc:172.26.0.11
+##############################
+#
+#  python:
+#    image: m03geek/opencv-dlib
+#    container_name: ai-python
+##    volumes:
+##      - ./scripts:/usr/src/app
+#    networks:
+#      ai_net:
+#        ipv4_address: 172.26.0.13
+
+networks:
+  ai_net:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.26.0.0/16
+#networks:
+#  ai_net:
